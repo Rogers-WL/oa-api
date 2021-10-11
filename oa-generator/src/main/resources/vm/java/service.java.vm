@@ -1,0 +1,17 @@
+package ${packageName}.service;
+
+import java.util.List;
+import ${packageName}.domain.${ClassName};
+
+/**
+ * ${functionName} Service接口
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+public interface I${ClassName}Service extends IService<${ClassName}Do>{
+
+    R save(${ClassName}Dto dto);
+
+    R del(String ids);
+}

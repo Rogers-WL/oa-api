@@ -1,0 +1,58 @@
+package ${packageName}.service.impl;
+
+import java.util.List;
+    #foreach ($column in $columns)
+        #if($column.javaField == 'createAt' || $column.javaField == 'updateAt')
+        import com.inovance.common.utils.DateUtils;
+            #break
+        #end
+    #end
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ${packageName}.mapper.${ClassName}Mapper;
+import ${packageName}.domain.${ClassName};
+import ${packageName}.service.I${ClassName}Service;
+import org.springframework.beans.BeanUtils;
+
+/**
+ * ${functionName} Service业务层处理
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Service
+public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper, ${ClassName}Do> implements I${ClassName}Service{
+
+    @Autowired
+    private ${ClassName}Mapper mapper;
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public R save(${ClassName}Dto dto) {
+        String id = dto.getId();
+            ${ClassName}Do ${className}Do = new ${ClassName}Do();
+        BeanUtils.copyProperties(dto, ${className}Do);
+        if (id == null) {
+                ${className}Do.setId(CommonUtil.generateId());
+            CommonUtil.setCreateAndUpdateInfo(${className}Do, null);
+            save(${className}Do);
+        } else {
+                ${ClassName}Do old = getById(id);
+            if (old == null) {
+                throw new BusinessException(BusinessExceptionEnum.DATA_CHANGED)
+            }
+            updateById(${className}Do);
+        }
+        return R.success();
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public R del(String ids) {
+        if (StringUtils.isNotBlank(ids)) {
+            removeByIds(Arrays.asList(ids.split(",")));
+        }
+        return R.success();
+    }
+}

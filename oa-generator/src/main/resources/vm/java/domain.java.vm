@@ -1,0 +1,46 @@
+package ${packageName}.domain;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.TableField;
+
+/**
+ * ${functionName} 对象 ${tableName}
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ */
+@EqualsAndHashCode(callSuper = true)
+@Data
+@NoArgsConstructor
+@Accessors(chain = true)
+@TableName("${tableName}")
+public class ${ClassName}Do extends BaseDo implements Serializable {
+
+private static final long serialVersionUID=1L;
+
+#foreach ($column in $columns)
+
+    /** $column.columnComment */
+#if($column.list)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#end
+#if($column.isPk==1)
+    @TableId(value = "$column.columnName")
+    private $column.javaType $column.javaField;
+#else
+    private $column.javaType $column.javaField;
+#end
+#end
+
+}
