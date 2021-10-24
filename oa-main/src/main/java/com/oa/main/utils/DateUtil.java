@@ -1,5 +1,6 @@
 package com.oa.main.utils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -41,10 +42,17 @@ public class DateUtil {
      * @author rogers
      * @date  2021/10/24 13:17
      */
-    public static LocalDateTime stringToDatTime(String s) {
+    public static LocalDateTime stringToDateTime(String s) {
         if (s == null) {
             return null;
         }
         return LocalDateTime.parse(s, DATE_TIME_FORMATTER);
+    }
+
+    public static LocalDate stringToDate(String s) {
+        if (s == null) {
+            return null;
+        }
+        return LocalDate.parse(s, DATE_FORMATTER);
     }
 }

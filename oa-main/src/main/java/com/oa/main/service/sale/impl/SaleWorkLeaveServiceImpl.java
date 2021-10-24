@@ -43,8 +43,8 @@ public class SaleWorkLeaveServiceImpl extends ServiceImpl<SaleWorkLeaveMapper, S
         if (id == null) {
             SaleWorkLeaveDo saleWorkLeaveDo = new SaleWorkLeaveDo();
             BeanUtils.copyProperties(dto, saleWorkLeaveDo);
-            saleWorkLeaveDo.setStartTime(DateUtil.stringToDatTime(dto.getStartTime()));
-            saleWorkLeaveDo.setEndTime(DateUtil.stringToDatTime(dto.getEndTime()));
+            saleWorkLeaveDo.setStartTime(DateUtil.stringToDateTime(dto.getStartTime()));
+            saleWorkLeaveDo.setEndTime(DateUtil.stringToDateTime(dto.getEndTime()));
             saleWorkLeaveDo.setId(CommonUtil.generateId());
             CommonUtil.setCreateAndUpdateInfo(saleWorkLeaveDo, true);
             saleWorkLeaveDo.setStatus(3);

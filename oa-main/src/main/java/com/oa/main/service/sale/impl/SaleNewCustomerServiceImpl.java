@@ -12,6 +12,7 @@ import com.oa.main.dto.sale.SaleNewCustomerDto;
 import com.oa.main.mapper.sale.SaleNewCustomerMapper;
 import com.oa.main.service.sale.ISaleNewCustomerService;
 import com.oa.main.utils.CommonUtil;
+import com.oa.main.utils.DateUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ public class SaleNewCustomerServiceImpl extends ServiceImpl<SaleNewCustomerMappe
         BeanUtils.copyProperties(dto, saleNewCustomerDo);
         if (id == null) {
             saleNewCustomerDo.setId(CommonUtil.generateId());
+            saleNewCustomerDo.setDate(DateUtil.stringToDate(dto.getDate()));
             CommonUtil.setCreateAndUpdateInfo(saleNewCustomerDo, true);
             save(saleNewCustomerDo);
         } else {

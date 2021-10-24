@@ -45,6 +45,7 @@ public class SaleNewCustomerController extends BaseController {
     @GetMapping("/list")
     public TableDataInfo list(SaleNewCustomerDto saleNewCustomerDto) {
         QueryWrapper<SaleNewCustomerDo> wrapper = new QueryWrapper<>();
+        wrapper.eq(notNull(saleNewCustomerDto.getCreateBy()), "create_by", saleNewCustomerDto.getCreateBy());
         wrapper.like(notNull(saleNewCustomerDto.getWechat()), "wechat", saleNewCustomerDto.getWechat());
         wrapper.eq(notNull(saleNewCustomerDto.getCreateBy()), "create_by", saleNewCustomerDto.getCreateBy());
         startPage(CommonConstant.SQL_DEFAULT_ORDER);
