@@ -31,15 +31,11 @@ public class SaleGroupDo extends BaseDo implements Serializable {
     @TableId(value = "id")
     private String id;
 
-
     private String name;
-
 
     private String remark;
 
-
     private String managerAccount;
-
 
     private String managerName;
 

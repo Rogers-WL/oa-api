@@ -22,8 +22,13 @@ public class BusinessException extends RuntimeException{
         this.message = "请求失败";
     }
 
+    public BusinessException(String message) {
+        this.message = message;
+    }
+
     public BusinessException(BusinessExceptionEnum exceptionEnum) {
         this.code = exceptionEnum.getCode();
         this.message = exceptionEnum.getMessage();
     }
+
 }

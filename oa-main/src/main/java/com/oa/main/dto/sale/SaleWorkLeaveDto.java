@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -28,14 +29,33 @@ public class SaleWorkLeaveDto implements Serializable {
 
     private String id;
 
+    @ApiModelProperty("精确到秒的格式")
+    @NotBlank(message = "请假开始时间不能为空")
     private String startTime;
 
+    @ApiModelProperty("精确到秒的格式")
+    @NotBlank(message = "请假结束时间不能为空")
     private String endTime;
 
+    @ApiModelProperty("请假类型")
+    private String type;
+
+    @NotBlank(message = "请假理由不能为空")
     private String reason;
 
-    @ApiModelProperty("0已通过1未通过2申请取消3组长审批4主管审批5boss审批6人事审批")
+    @ApiModelProperty("0已通过1未通过2申请取消3主管审批4boss审批5人事审批")
     private Integer status;
+
+    private String handler;
+
+    private String handlerName;
+
+    private String unpassComment;
+
+    @ApiModelProperty("我的请假查询")
+    private String createBy;
+
+    private String createByName;
 
     private String createTime;
 }

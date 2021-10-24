@@ -33,4 +33,18 @@ public class DateUtil {
         }
         return date.toString();
     }
+
+
+    /**
+     * 字符转转时间
+     *
+     * @author rogers
+     * @date  2021/10/24 13:17
+     */
+    public static LocalDateTime stringToDatTime(String s) {
+        if (s == null) {
+            return null;
+        }
+        return LocalDateTime.parse(s, DATE_TIME_FORMATTER);
+    }
 }

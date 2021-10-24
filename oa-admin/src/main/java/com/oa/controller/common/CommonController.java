@@ -65,17 +65,16 @@ public class CommonController {
      */
     @PostMapping("/common/upload")
     public CustomR uploadFile(MultipartFile file) throws Exception {
-        Map<String, Object> result = new HashMap<>(8);
         try {
             // 上传文件路径
             String filePath = OaConfig.getUploadPath();
             // 上传并返回新文件名称
             String fileName = FileUploadUtils.upload(filePath, file);
             String url = serverConfig.getUrl() + fileName;
-           CustomR r = CustomR.success();
-           r.put("fileName", fileName);
+            CustomR r = CustomR.success();
+            r.put("fileName", fileName);
             r.put("url", url);
-           return r;
+            return r;
         } catch (Exception e) {
             return CustomR.error("图片上传失败，请重试");
         }

@@ -10,12 +10,14 @@ import com.oa.main.constant.CommonConstant;
 import com.oa.main.doman.sale.SaleWorkLogDo;
 import com.oa.main.dto.sale.SaleWorkLogDto;
 import com.oa.main.service.sale.ISaleWorkLogService;
+import com.oa.main.utils.CommonUtil;
 import com.oa.main.utils.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ import java.util.List;
  */
 @Api(tags = {"工作日志"})
 @RestController
-@RequestMapping("/common/log")
+@RequestMapping("/sale/workLog")
 public class SaleWorkLogController extends BaseController {
 
     @Autowired
@@ -40,10 +42,13 @@ public class SaleWorkLogController extends BaseController {
      */
     @ApiOperation("列表")
     @ApiImplicitParam(name = "SaleWorkLogDto", value = "工作日志对象")
-    //@PreAuthorize("hasAuthority('common:log:list')")
+    //@PreAuthorize("hasAuthority('sale:workLog:list')")
     @GetMapping("/list")
     public TableDataInfo list(SaleWorkLogDto saleWorkLogDto) {
         QueryWrapper<SaleWorkLogDo> wrapper = new QueryWrapper<>();
+        wrapper.eq(notNull(saleWorkLogDto.getCreateBy()), "create_by", saleWorkLogDto.getCreateBy());
+        wrapper.eq(saleWorkLogDto.getStatus() != null, "status", saleWorkLogDto.getStatus());
+        wrapper.like(notNull(saleWorkLogDto.getCreateBy()), "create_by_name", saleWorkLogDto.getCreateByName());
         startPage(CommonConstant.SQL_DEFAULT_ORDER);
         List<SaleWorkLogDo> doList = service.list(wrapper);
         List<SaleWorkLogDto> dtoList = new ArrayList<>();
@@ -63,12 +68,15 @@ public class SaleWorkLogController extends BaseController {
      */
     @ApiOperation("详情")
     @ApiImplicitParam(name = "id", value = "id")
-    //@PreAuthorize("hasAuthority('common:log:detail')")
+    //@PreAuthorize("hasAuthority('sale:workLog:detail')")
     @GetMapping(value = "/{id}")
     public R getInfo(@PathVariable("id") String id) {
         SaleWorkLogDto dto = new SaleWorkLogDto();
         SaleWorkLogDo saleWorkLogDo = service.getById(id);
         BeanUtils.copyProperties(saleWorkLogDo, dto);
+        dto.setManagerTime(DateUtil.dateToString(saleWorkLogDo.getManagerTime(), true));
+        dto.setBossTime(DateUtil.dateToString(saleWorkLogDo.getBossTime(), true));
+        dto.setCreateTime(DateUtil.dateToString(saleWorkLogDo.getCreateTime(), true));
         return R.success(dto);
     }
 
@@ -77,23 +85,11 @@ public class SaleWorkLogController extends BaseController {
      */
     @ApiOperation("新增")
     @ApiImplicitParam(name = "SaleWorkLogDto", value = "工作日志对象")
-    //@PreAuthorize("hasAuthority('common:log:add')")
+    //@PreAuthorize("hasAuthority('sale:workLog:add')")
     @Log(title = "工作日志", businessType = BusinessType.INSERT)
     @PostMapping
-    public R add(@RequestBody SaleWorkLogDto saleWorkLogDto) {
+    public R add(@RequestBody @Validated SaleWorkLogDto saleWorkLogDto) {
 
-        return service.save(saleWorkLogDto);
-    }
-
-    /**
-     * 修改
-     */
-    @ApiOperation("修改")
-    @ApiImplicitParam(name = "SaleWorkLogDto", value = "工作日志对象")
-    //@PreAuthorize("hasAuthority('common:log:update')")
-    @Log(title = "工作日志", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public R edit(@RequestBody SaleWorkLogDto saleWorkLogDto) {
         return service.save(saleWorkLogDto);
     }
 
@@ -102,11 +98,39 @@ public class SaleWorkLogController extends BaseController {
      */
     @ApiOperation("批量删除")
     @ApiImplicitParam(name = "ids", value = "ids,逗号隔开")
-    //@PreAuthorize("hasAuthority('common:log:delete')")
+    //@PreAuthorize("hasAuthority('sale:workLog:delete')")
     @Log(title = "工作日志", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public R remove(@PathVariable String ids) {
         return service.del(ids);
+    }
+
+
+    @ApiOperation("撤回申请,传id")
+    //@PreAuthorize("hasAuthority('sale:workLog:update')")
+    @Log(title = "工作日志", businessType = BusinessType.UPDATE)
+    @PutMapping("/recall/{id}")
+    public R recall(@PathVariable String id) {
+        return service.recall(id);
+    }
+
+    @ApiOperation("主管审批,有id，managerComment字段")
+    @ApiImplicitParam(name = "SaleWorkLogDto", value = "工作日志对象")
+    //@PreAuthorize("hasAuthority('sale:workLog:update')")
+    @Log(title = "工作日志", businessType = BusinessType.UPDATE)
+    @PutMapping("/manager")
+    public R manager(@RequestBody SaleWorkLogDto saleWorkLogDto) {
+        return service.manager(saleWorkLogDto);
+    }
+
+
+    @ApiOperation("boss审批,有id，bossComment字段")
+    @ApiImplicitParam(name = "SaleWorkLogDto", value = "工作日志对象")
+    //@PreAuthorize("hasAuthority('sale:workLog:update')")
+    @Log(title = "工作日志", businessType = BusinessType.UPDATE)
+    @PutMapping("/boss")
+    public R recall(@RequestBody SaleWorkLogDto saleWorkLogDto) {
+        return service.boss(saleWorkLogDto);
     }
 
 }

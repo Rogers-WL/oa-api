@@ -203,4 +203,8 @@ public class BaseController
     {
         return getLoginUser().getUsername();
     }
+
+    public boolean notNull(String s) {
+        return StringUtils.isNotBlank(s);
+    }
 }

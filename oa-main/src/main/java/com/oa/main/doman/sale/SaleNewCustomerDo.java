@@ -28,21 +28,16 @@ import java.time.LocalDateTime;
 @TableName("sale_new_customer")
 public class SaleNewCustomerDo extends BaseDo implements Serializable {
 
-private static final long serialVersionUID=1L;
-
-
+    private static final long serialVersionUID=1L;
 
     @TableId(value = "id")
     private String id;
-
 
     private LocalDate date;
 
     private String wechat;
 
-
     private Long amount;
-
 
     private String remark;
 

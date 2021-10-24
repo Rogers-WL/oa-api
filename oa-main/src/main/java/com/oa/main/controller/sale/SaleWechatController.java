@@ -16,10 +16,12 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 微信账号 Controller
@@ -40,10 +42,12 @@ public class SaleWechatController extends BaseController {
      */
     @ApiOperation("列表")
     @ApiImplicitParam(name = "SaleWechatDto", value = "微信账号对象")
-    //@PreAuthorize("hasAuthority('common:wechat:list')")
+    //@PreAuthorize("hasAuthority('sale:wechat:list')")
     @GetMapping("/list")
     public TableDataInfo list(SaleWechatDto saleWechatDto) {
         QueryWrapper<SaleWechatDo> wrapper = new QueryWrapper<>();
+        wrapper.like(notNull(saleWechatDto.getOwnerName()), "owner_name", saleWechatDto.getOwnerName());
+        wrapper.eq(saleWechatDto.getStatus() != null, "status", saleWechatDto.getStatus());
         startPage(CommonConstant.SQL_DEFAULT_ORDER);
         List<SaleWechatDo> doList = service.list(wrapper);
         List<SaleWechatDto> dtoList = new ArrayList<>();
@@ -62,7 +66,7 @@ public class SaleWechatController extends BaseController {
      */
     @ApiOperation("详情")
     @ApiImplicitParam(name = "id", value = "id")
-    //@PreAuthorize("hasAuthority('common:wechat:detail')")
+    //@PreAuthorize("hasAuthority('sale:wechat:detail')")
     @GetMapping(value = "/{id}")
     public R getInfo(@PathVariable("id") String id) {
         SaleWechatDto dto = new SaleWechatDto();
@@ -76,11 +80,10 @@ public class SaleWechatController extends BaseController {
      */
     @ApiOperation("新增")
     @ApiImplicitParam(name = "SaleWechatDto", value = "微信账号对象")
-    //@PreAuthorize("hasAuthority('common:wechat:add')")
+    //@PreAuthorize("hasAuthority('sale:wechat:add')")
     @Log(title = "微信账号", businessType = BusinessType.INSERT)
     @PostMapping
-    public R add(@RequestBody SaleWechatDto saleWechatDto) {
-
+    public R add(@RequestBody @Validated SaleWechatDto saleWechatDto) {
         return service.save(saleWechatDto);
     }
 
@@ -89,10 +92,10 @@ public class SaleWechatController extends BaseController {
      */
     @ApiOperation("修改")
     @ApiImplicitParam(name = "SaleWechatDto", value = "微信账号对象")
-    //@PreAuthorize("hasAuthority('common:wechat:update')")
+    //@PreAuthorize("hasAuthority('sale:wechat:update')")
     @Log(title = "微信账号", businessType = BusinessType.UPDATE)
     @PutMapping
-    public R edit(@RequestBody SaleWechatDto saleWechatDto) {
+    public R edit(@RequestBody @Validated SaleWechatDto saleWechatDto) {
         return service.save(saleWechatDto);
     }
 
@@ -101,11 +104,22 @@ public class SaleWechatController extends BaseController {
      */
     @ApiOperation("批量删除")
     @ApiImplicitParam(name = "ids", value = "ids,逗号隔开")
-    //@PreAuthorize("hasAuthority('common:wechat:delete')")
+    //@PreAuthorize("hasAuthority('sale:wechat:delete')")
     @Log(title = "微信账号", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public R remove(@PathVariable String ids) {
         return service.del(ids);
+    }
+
+    @ApiOperation("新客登记时获取可选微信号，参数owner=登陆者账号")
+    @ApiImplicitParam(name = "owner", value = "登陆者账号", type = "String")
+    @GetMapping("/select/{owner}")
+    public R getSelect(@PathVariable("owner") String owner) {
+        QueryWrapper<SaleWechatDo> wrapper = new QueryWrapper<>();
+        wrapper.eq( "owner", owner);
+        wrapper.eq( "status", 0);
+        List<SaleWechatDo> doList = service.list(wrapper);
+       return R.success(doList.stream().map(SaleWechatDo::getAccount).collect(Collectors.toList()));
     }
 
 }

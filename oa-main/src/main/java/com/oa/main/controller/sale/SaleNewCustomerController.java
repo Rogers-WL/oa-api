@@ -6,6 +6,7 @@ import com.oa.common.config.response.R;
 import com.oa.common.core.controller.BaseController;
 import com.oa.common.core.page.TableDataInfo;
 import com.oa.common.enums.BusinessType;
+import com.oa.common.utils.StringUtils;
 import com.oa.main.constant.CommonConstant;
 import com.oa.main.doman.sale.SaleNewCustomerDo;
 import com.oa.main.dto.sale.SaleNewCustomerDto;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 @Api(tags = {"新客登记"})
 @RestController
-@RequestMapping("/sale/customer")
+@RequestMapping("/sale/newCustomer")
 public class SaleNewCustomerController extends BaseController {
 
     @Autowired
@@ -40,10 +41,12 @@ public class SaleNewCustomerController extends BaseController {
      */
     @ApiOperation("列表")
     @ApiImplicitParam(name = "SaleNewCustomerDto", value = "新客登记对象")
-    //@PreAuthorize("hasAuthority('common:customer:list')")
+    //@PreAuthorize("hasAuthority('sale:newCustomer:list')")
     @GetMapping("/list")
     public TableDataInfo list(SaleNewCustomerDto saleNewCustomerDto) {
         QueryWrapper<SaleNewCustomerDo> wrapper = new QueryWrapper<>();
+        wrapper.like(notNull(saleNewCustomerDto.getWechat()), "wechat", saleNewCustomerDto.getWechat());
+        wrapper.eq(notNull(saleNewCustomerDto.getCreateBy()), "create_by", saleNewCustomerDto.getCreateBy());
         startPage(CommonConstant.SQL_DEFAULT_ORDER);
         List<SaleNewCustomerDo> doList = service.list(wrapper);
         List<SaleNewCustomerDto> dtoList = new ArrayList<>();
@@ -62,7 +65,7 @@ public class SaleNewCustomerController extends BaseController {
      */
     @ApiOperation("详情")
     @ApiImplicitParam(name = "id", value = "id")
-    //@PreAuthorize("hasAuthority('common:customer:detail')")
+    //@PreAuthorize("hasAuthority('sale:newCustomer:detail')")
     @GetMapping(value = "/{id}")
     public R getInfo(@PathVariable("id") String id) {
         SaleNewCustomerDto dto = new SaleNewCustomerDto();
@@ -76,7 +79,7 @@ public class SaleNewCustomerController extends BaseController {
      */
     @ApiOperation("新增")
     @ApiImplicitParam(name = "SaleNewCustomerDto", value = "新客登记对象")
-    //@PreAuthorize("hasAuthority('common:customer:add')")
+    //@PreAuthorize("hasAuthority('sale:newCustomer:add')")
     @Log(title = "新客登记", businessType = BusinessType.INSERT)
     @PostMapping
     public R add(@RequestBody SaleNewCustomerDto saleNewCustomerDto) {
@@ -89,7 +92,7 @@ public class SaleNewCustomerController extends BaseController {
      */
     @ApiOperation("修改")
     @ApiImplicitParam(name = "SaleNewCustomerDto", value = "新客登记对象")
-    //@PreAuthorize("hasAuthority('common:customer:update')")
+    //@PreAuthorize("hasAuthority('sale:newCustomer:update')")
     @Log(title = "新客登记", businessType = BusinessType.UPDATE)
     @PutMapping
     public R edit(@RequestBody SaleNewCustomerDto saleNewCustomerDto) {
@@ -101,7 +104,7 @@ public class SaleNewCustomerController extends BaseController {
      */
     @ApiOperation("批量删除")
     @ApiImplicitParam(name = "ids", value = "ids,逗号隔开")
-    //@PreAuthorize("hasAuthority('common:customer:delete')")
+    //@PreAuthorize("hasAuthority('sale:newCustomer:delete')")
     @Log(title = "新客登记", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public R remove(@PathVariable String ids) {

@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 【请填写功能名称】 对象 sale_work_log
@@ -38,9 +39,16 @@ private static final long serialVersionUID=1L;
 
     private String remark;
 
-    /** 0已审阅1组长审阅2主管审阅3boss审阅 */
+    /** 0已审阅1已撤回2主管审阅3boss审阅 */
     private Integer status;
 
-    private String leaderComment;
+    private String manager;
+    private String managerName;
+    private String managerComment;
+    private LocalDateTime managerTime;
+    private String boss;
+    private String bossName;
+    private String bossComment;
+    private LocalDateTime bossTime;
 
 }

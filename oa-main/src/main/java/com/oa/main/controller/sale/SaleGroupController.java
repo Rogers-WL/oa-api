@@ -7,6 +7,7 @@ import com.oa.common.config.response.R;
 import com.oa.common.core.controller.BaseController;
 import com.oa.common.core.page.TableDataInfo;
 import com.oa.common.enums.BusinessType;
+import com.oa.common.utils.StringUtils;
 import com.oa.main.constant.CommonConstant;
 import com.oa.main.doman.sale.SaleGroupDo;
 import com.oa.main.dto.sale.SaleGroupDto;
@@ -46,6 +47,7 @@ public class SaleGroupController extends BaseController {
     @GetMapping("/list")
     public TableDataInfo list(SaleGroupDto saleGroupDto) {
         QueryWrapper<SaleGroupDo> wrapper = new QueryWrapper<>();
+        wrapper.like(StringUtils.isNotBlank(saleGroupDto.getName()), "name", saleGroupDto.getName());
         startPage(CommonConstant.SQL_DEFAULT_ORDER);
         List<SaleGroupDo> doList = service.list(wrapper);
         List<SaleGroupDto> dtoList = new ArrayList<>();

@@ -36,10 +36,16 @@ private static final long serialVersionUID=1L;
 
     private LocalDateTime endTime;
 
+    private String type;
+
     private String reason;
 
-    /** 0已通过1未通过2申请取消3组长审批4主管审批5boss审批6人事审批 */
+    /** 0已通过1未通过2申请取消3主管审批4boss审批5人事审批 */
     private Integer status;
 
+    private String handler;
 
+    private String handlerName;
+
+    private String unpassComment;
 }

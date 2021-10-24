@@ -5,6 +5,8 @@ import com.oa.common.config.response.R;
 import com.oa.common.utils.StringUtils;
 import com.oa.framework.web.enums.BusinessExceptionEnum;
 import com.oa.framework.web.exception.BusinessException;
+import com.oa.main.config.enusm.FileMasterType;
+import com.oa.main.constant.CommonConstant;
 import com.oa.main.doman.sale.SaleNewCustomerDo;
 import com.oa.main.dto.sale.SaleNewCustomerDto;
 import com.oa.main.mapper.sale.SaleNewCustomerMapper;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * 【请填写功能名称】 Service业务层处理
@@ -33,19 +37,22 @@ public class SaleNewCustomerServiceImpl extends ServiceImpl<SaleNewCustomerMappe
     @Override
     public R save(SaleNewCustomerDto dto) {
         String id = dto.getId();
-            SaleNewCustomerDo saleNewCustomerDo = new SaleNewCustomerDo();
+        SaleNewCustomerDo saleNewCustomerDo = new SaleNewCustomerDo();
         BeanUtils.copyProperties(dto, saleNewCustomerDo);
         if (id == null) {
-                saleNewCustomerDo.setId(CommonUtil.generateId());
+            saleNewCustomerDo.setId(CommonUtil.generateId());
             CommonUtil.setCreateAndUpdateInfo(saleNewCustomerDo, true);
             save(saleNewCustomerDo);
         } else {
-                SaleNewCustomerDo old = getById(id);
+            SaleNewCustomerDo old = getById(id);
             if (old == null) {
                 throw new BusinessException(BusinessExceptionEnum.DATA_CHANGED);
             }
+            CommonUtil.setCreateAndUpdateInfo(saleNewCustomerDo, false);
             updateById(saleNewCustomerDo);
+            CommonUtil.deleteFile(Collections.singletonList(id));
         }
+        CommonUtil.saveFile(dto.getPicList(), id, FileMasterType.newCustomer);
         return R.success();
     }
 

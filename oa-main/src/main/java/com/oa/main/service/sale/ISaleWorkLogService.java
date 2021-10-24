@@ -16,4 +16,10 @@ public interface ISaleWorkLogService extends IService<SaleWorkLogDo> {
     R save(SaleWorkLogDto dto);
 
     R del(String ids);
+
+    R recall(String id);
+
+    R manager(SaleWorkLogDto dto);
+
+    R boss(SaleWorkLogDto dto);
 }

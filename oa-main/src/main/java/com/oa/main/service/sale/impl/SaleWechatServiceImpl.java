@@ -2,8 +2,8 @@ package com.oa.main.service.sale.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.oa.common.config.response.R;
-import com.oa.main.config.enums.BusinessExceptionEnum;
-import com.oa.main.config.exception.BusinessException;
+import com.oa.framework.web.enums.BusinessExceptionEnum;
+import com.oa.framework.web.exception.BusinessException;
 import com.oa.main.doman.sale.SaleWechatDo;
 import com.oa.main.dto.sale.SaleWechatDto;
 import com.oa.main.mapper.sale.SaleWechatMapper;
@@ -33,17 +33,19 @@ public class SaleWechatServiceImpl extends ServiceImpl<SaleWechatMapper, SaleWec
     @Override
     public R save(SaleWechatDto dto) {
         String id = dto.getId();
-            SaleWechatDo saleWechatDo = new SaleWechatDo();
+        SaleWechatDo saleWechatDo = new SaleWechatDo();
         BeanUtils.copyProperties(dto, saleWechatDo);
         if (id == null) {
-                saleWechatDo.setId(CommonUtil.generateId());
+            saleWechatDo.setId(CommonUtil.generateId());
+            saleWechatDo.setStatus(0);
             CommonUtil.setCreateAndUpdateInfo(saleWechatDo, true);
             save(saleWechatDo);
         } else {
-                SaleWechatDo old = getById(id);
+            SaleWechatDo old = getById(id);
             if (old == null) {
                 throw new BusinessException(BusinessExceptionEnum.DATA_CHANGED);
             }
+            CommonUtil.setCreateAndUpdateInfo(saleWechatDo, false);
             updateById(saleWechatDo);
         }
         return R.success();
