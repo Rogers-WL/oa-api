@@ -10,7 +10,9 @@ import com.oa.main.service.sale.ISaleFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -37,6 +39,10 @@ public class CommonUtil {
         return UUID.randomUUID().toString().replace("-", "").toLowerCase();
     }
 
+    public static String generateOrderNo() {
+        return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+    }
+
     public static void setCreateAndUpdateInfo(BaseDo baseDo, boolean isCreate) {
         LocalDateTime now = LocalDateTime.now();
         if (isCreate) {
@@ -48,7 +54,6 @@ public class CommonUtil {
         baseDo.setUpdateByName(SecurityUtils.getUserShowName());
         baseDo.setUpdateTime(now);
     }
-
 
     /**
      * 根据id和类型删除附件

@@ -60,7 +60,10 @@
             <groupId>com.oa</groupId>
             <artifactId>oa-generator</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.oa</groupId>
+            <artifactId>oa-main</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
