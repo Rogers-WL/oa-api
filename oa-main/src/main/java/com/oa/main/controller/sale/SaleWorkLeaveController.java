@@ -126,16 +126,15 @@ public class SaleWorkLeaveController extends BaseController {
     @ApiOperation("撤回请假申请")
     @ApiImplicitParam(name = "id", value = "ids")
     //@PreAuthorize("hasAuthority('sale:leave:delete')")
-    @Log(title = "请假", businessType = BusinessType.DELETE)
+    @Log(title = "请假", businessType = BusinessType.UPDATE)
     @PutMapping("/{id}")
     public R recall(@PathVariable String id) {
         return service.save(new SaleWorkLeaveDto().setId(id));
     }
 
     @ApiOperation("审批")
-    @ApiImplicitParam(name = "id", value = "ids")
     //@PreAuthorize("hasAuthority('sale:leave:delete')")
-    @Log(title = "请假", businessType = BusinessType.DELETE)
+    @Log(title = "请假", businessType = BusinessType.UPDATE)
     @PutMapping("/approve")
     public R approve(@RequestBody @Validated CommonApproveDto approveDto) {
         return service.approve(approveDto);

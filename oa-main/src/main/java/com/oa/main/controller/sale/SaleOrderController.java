@@ -8,6 +8,8 @@ import com.oa.common.core.page.TableDataInfo;
 import com.oa.common.enums.BusinessType;
 import com.oa.main.constant.CommonConstant;
 import com.oa.main.doman.sale.SaleOrderDo;
+import com.oa.main.dto.approve.CommonApproveDto;
+import com.oa.main.dto.approve.CommonOrderDto;
 import com.oa.main.dto.sale.SaleOrderDto;
 import com.oa.main.service.sale.ISaleOrderService;
 import com.oa.main.utils.DateUtil;
@@ -16,6 +18,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -40,11 +43,14 @@ public class SaleOrderController extends BaseController {
      */
     @ApiOperation("列表")
     @ApiImplicitParam(name = "SaleOrderDto", value = "订单对象")
-    //@PreAuthorize("hasAuthority('common:order:list')")
+    //@PreAuthorize("hasAuthority('sale:order::list')")
     @GetMapping("/list")
     public TableDataInfo list(SaleOrderDto saleOrderDto) {
         QueryWrapper<SaleOrderDo> wrapper = new QueryWrapper<>();
         startPage(CommonConstant.SQL_DEFAULT_ORDER);
+        wrapper.eq(notNull(saleOrderDto.getCreateBy()), "create_by", saleOrderDto.getCreateBy());
+        wrapper.like(notNull(saleOrderDto.getCreateByName()), "create_by_name", saleOrderDto.getCreateByName());
+        wrapper.eq(saleOrderDto.getStatus() != null, "status", saleOrderDto.getStatus());
         List<SaleOrderDo> doList = service.list(wrapper);
         List<SaleOrderDto> dtoList = new ArrayList<>();
         for (SaleOrderDo p : doList) {
@@ -62,7 +68,7 @@ public class SaleOrderController extends BaseController {
      */
     @ApiOperation("详情")
     @ApiImplicitParam(name = "id", value = "id")
-    //@PreAuthorize("hasAuthority('common:order:detail')")
+    //@PreAuthorize("hasAuthority('sale:order::detail')")
     @GetMapping(value = "/{id}")
     public R getInfo(@PathVariable("id") String id) {
         SaleOrderDto dto = new SaleOrderDto();
@@ -76,10 +82,10 @@ public class SaleOrderController extends BaseController {
      */
     @ApiOperation("新增")
     @ApiImplicitParam(name = "SaleOrderDto", value = "订单对象")
-    //@PreAuthorize("hasAuthority('common:order:add')")
+    //@PreAuthorize("hasAuthority('sale:order::add')")
     @Log(title = "订单", businessType = BusinessType.INSERT)
     @PostMapping
-    public R add(@RequestBody SaleOrderDto saleOrderDto) {
+    public R add(@RequestBody @Validated SaleOrderDto saleOrderDto) {
 
         return service.save(saleOrderDto);
     }
@@ -87,25 +93,41 @@ public class SaleOrderController extends BaseController {
     /**
      * 修改
      */
-    @ApiOperation("修改")
-    @ApiImplicitParam(name = "SaleOrderDto", value = "订单对象")
-    //@PreAuthorize("hasAuthority('common:order:update')")
-    @Log(title = "订单", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public R edit(@RequestBody SaleOrderDto saleOrderDto) {
-        return service.save(saleOrderDto);
-    }
+//    @ApiOperation("修改")
+//    @ApiImplicitParam(name = "SaleOrderDto", value = "订单对象")
+//    //@PreAuthorize("hasAuthority('sale:order::update')")
+//    @Log(title = "订单", businessType = BusinessType.UPDATE)
+//    @PutMapping
+//    public R edit(@RequestBody SaleOrderDto saleOrderDto) {
+//        return service.save(saleOrderDto);
+//    }
 
     /**
      * 批量删除
      */
     @ApiOperation("批量删除")
     @ApiImplicitParam(name = "ids", value = "ids,逗号隔开")
-    //@PreAuthorize("hasAuthority('common:order:delete')")
+    //@PreAuthorize("hasAuthority('sale:order::delete')")
     @Log(title = "订单", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public R remove(@PathVariable String ids) {
         return service.del(ids);
+    }
+
+    @ApiOperation("订单审批，不需要给不同意订单的理由输入框")
+    //@PreAuthorize("hasAuthority('sale:order::delete')")
+    @Log(title = "订单", businessType = BusinessType.UPDATE)
+    @PutMapping("/approve")
+    public R approve(@RequestBody @Validated CommonApproveDto dto) {
+        return service.approve(dto);
+    }
+
+    @ApiOperation("订单发货按钮，收货按钮，拒收按钮，取消订单按钮接口（只有状态是待主管确认的订单有取消按钮），其他状态类似")
+    //@PreAuthorize("hasAuthority('sale:order::delete')")
+    @Log(title = "订单", businessType = BusinessType.UPDATE)
+    @PutMapping("/operate")
+    public R operateOrder(@RequestBody @Validated CommonOrderDto dto) {
+        return service.operateOrder(dto);
     }
 
 }

@@ -58,7 +58,10 @@
             <groupId>com.oa</groupId>
             <artifactId>oa-system</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.oa</groupId>
+            <artifactId>oa-main</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

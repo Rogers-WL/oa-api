@@ -10,6 +10,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModel;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -22,7 +24,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
-@ApiModel("【请填写功能名称】")
+@ApiModel("订单")
 public class SaleOrderDto implements Serializable {
 
 private static final long serialVersionUID=1L;
@@ -32,19 +34,26 @@ private static final long serialVersionUID=1L;
 
     private String orderNo;
 
+    @NotBlank(message = "产品名称必填")
     private String product;
 
+    @NotBlank(message = "收货地址必填")
     private String receiveAddress;
 
+    @NotBlank(message = "客户名称必填")
     private String customerName;
 
+    @NotBlank(message = "客户电话必填")
     private String customerPhone;
 
+    @NotBlank(message = "订单金额必填")
     private BigDecimal orderPrice;
 
+    @NotNull(message = "付款类型必填")
     @ApiModelProperty("0全款1定金")
     private Integer payType;
 
+    @NotNull(message = "已付金额不能为空")
     private BigDecimal payMoney;
 
     private BigDecimal restMoney;
@@ -53,8 +62,12 @@ private static final long serialVersionUID=1L;
 
     private String remark;
 
-    @ApiModelProperty("0已签收1已拒收2订单取消3主管确认4boos确认5待发货6待收货")
+    @ApiModelProperty("0已签收1已拒收2订单取消3主管确认4boos确认5审批未通过6待发货7待收货")
     private Integer status;
+
+    private String createBy;
+
+    private String createByName;
 
     private String createTime;
 }

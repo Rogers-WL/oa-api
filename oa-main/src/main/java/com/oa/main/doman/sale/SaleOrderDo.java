@@ -64,7 +64,7 @@ private static final long serialVersionUID=1L;
 
     private String remark;
 
-    /** 0已签收1已拒收2订单取消3主管确认4boos确认5待发货6待收货 */
+    /** 0已签收1已拒收2订单取消3主管确认4boos确认5审批未通过6待发货7待收货 */
     private Integer status;
 
 

@@ -15,6 +15,7 @@ public class CommonConstant {
     public static final String ROLE_MANAGER = "manager";
     public static final String ROLE_BOSS = "boss";
     public static final String ROLE_DELIVER = "deliver";
+    public static final String ROLE_HR = "hr";
 
     /** 请假类型 */
     public static final List<String> WORK_LEAVE_TYPE = new ArrayList<>();
